@@ -188,6 +188,8 @@ send_ipi:
       break;
     case SBI_SM_ENCLAVE_GETRANDOM:
       retval = mcall_sm_enclave_getrandom(arg0, arg1);
+    case SBI_SM_EXTEND_ENCLAVE:
+      retval = mcall_sm_extend_enclave(arg0, arg1);
       break;
     case SBI_SM_NOT_IMPLEMENTED:
       retval = mcall_sm_not_implemented(regs, arg0);

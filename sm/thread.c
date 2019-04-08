@@ -94,3 +94,10 @@ void clean_smode_csrs(struct thread_state_t* state){
   state->prev_csrs.satp = 0;
 
 }
+
+void swap_prev_sepc(struct thread_state_t* thread, uintptr_t current_sepc)
+{
+  uintptr_t tmp = thread->prev_sepc;
+  thread->prev_sepc = current_sepc;
+  write_csr(sepc, tmp);
+}
