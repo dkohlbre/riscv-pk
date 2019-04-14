@@ -576,7 +576,6 @@ enclave_ret_t resume_enclave(uintptr_t* host_regs, eid_t eid)
   if(!resumable) {
     return ENCLAVE_NOT_RESUMABLE;
   }
-
   // Enclave is OK to resume, context switch to it
   return context_switch_to_enclave(host_regs, eid, 0);
 }
