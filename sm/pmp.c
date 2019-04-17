@@ -533,7 +533,6 @@ int pmp_region_init(uintptr_t start, uint64_t size, enum pmp_priority priority, 
       (priority != PMP_PRI_TOP || start != 0)) {
       PMP_ERROR(PMP_REGION_IMPOSSIBLE_TOR, "The top-priority TOR PMP entry must start from address 0");
     }
-
     return tor_region_init(start, size, priority, rid, allow_overlap);
   }
 }
@@ -552,8 +551,10 @@ int pmp_extend_atomic(region_id_t rid, uintptr_t size)
   uint64_t old_size = region_get_size(rid);
   uint64_t new_size = old_size + size;
 
+  /* TODO this check is wrong I think */
   if(region_is_napot(rid)) {
-    if(!(new_size & (new_size - 1)) && !(start & (new_size - 1))) {
+    /* If the new size is also POT, then we can extend */
+    if(new_size & (new_size - 1)) {
       PMP_ERROR(PMP_REGION_SIZE_INVALID, "Cannot extend PMP region");
     }
     region_extend(rid, size);

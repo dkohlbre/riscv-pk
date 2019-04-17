@@ -499,11 +499,9 @@ enclave_ret_t extend_enclave(eid_t eid, uintptr_t size)
   spinlock_lock(&encl_lock);
   extendable = ENCLAVE_EXISTS(eid);
   spinlock_unlock(&encl_lock);
-
   if(!extendable) {
     return ENCLAVE_UNKNOWN_ERROR;
   }
-
   // FIXME: only simulating it
   // printm("extend enclave requested [size:0x%lx]\n", size);
   if(pmp_extend_atomic(enclaves[eid].rid, size))
@@ -512,7 +510,6 @@ enclave_ret_t extend_enclave(eid_t eid, uintptr_t size)
     return ENCLAVE_UNKNOWN_ERROR;
   }
   pmp_set_global(enclaves[eid].rid, PMP_NO_PERM);
-
   return ENCLAVE_SUCCESS;
 }
 
@@ -566,7 +563,6 @@ enclave_ret_t stop_enclave(uintptr_t* encl_regs, uint64_t request, eid_t eid)
 enclave_ret_t resume_enclave(uintptr_t* host_regs, eid_t eid)
 {
   int resumable;
-
   spinlock_lock(&encl_lock);
   resumable = (ENCLAVE_EXISTS(eid)
                && (enclaves[eid].state == RUNNING) // not necessary
@@ -576,6 +572,7 @@ enclave_ret_t resume_enclave(uintptr_t* host_regs, eid_t eid)
   if(!resumable) {
     return ENCLAVE_NOT_RESUMABLE;
   }
+
   // Enclave is OK to resume, context switch to it
   return context_switch_to_enclave(host_regs, eid, 0);
 }
