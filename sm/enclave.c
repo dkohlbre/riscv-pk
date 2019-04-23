@@ -68,14 +68,10 @@ static inline enclave_ret_t context_switch_to_enclave(uintptr_t* regs,
     write_csr(satp, enclaves[eid].encl_satp);
   }
 
-  // disable timer set by the OS
-  clear_csr(mie, MIP_MTIP);
-
-  clear_csr(mip, MIP_MTIP);
-  clear_csr(mip, MIP_STIP);
   clear_csr(mip, MIP_SSIP);
   clear_csr(mip, MIP_SEIP);
 
+  set_csr(sie, MIP_STIP);
   // set PMP
   pmp_set(enclaves[eid].rid, PMP_ALL_PERM);
   osm_pmp_set(PMP_NO_PERM);
@@ -488,6 +484,12 @@ enclave_ret_t run_enclave(uintptr_t* host_regs, eid_t eid)
   if(!runable) {
     return ENCLAVE_NOT_RUNNABLE;
   }
+
+  // disable timer set by the OS, boot of the rt must not be
+  // interrupted.
+  clear_csr(mie, MIP_MTIP);
+  clear_csr(mip, MIP_STIP);
+
 
   // Enclave is OK to run, context switch to it
   return context_switch_to_enclave(host_regs, eid, 1);

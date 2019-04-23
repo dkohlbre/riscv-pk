@@ -49,7 +49,8 @@ thread){
   LOCAL_SWAP_CSR(sepc);
   LOCAL_SWAP_CSR(scause);
   LOCAL_SWAP_CSR(sbadaddr);
-  LOCAL_SWAP_CSR(sip);
+  // This is the job of the rt to handle
+  //  LOCAL_SWAP_CSR(sip);
   LOCAL_SWAP_CSR(satp);
 
 #undef LOCAL_SWAP_CSR
